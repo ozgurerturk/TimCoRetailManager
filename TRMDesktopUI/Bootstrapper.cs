@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using TRMDesktopUI.Helpers;
 using TRMDesktopUI.ViewModels;
 
 namespace TRMDesktopUI
@@ -16,6 +18,11 @@ namespace TRMDesktopUI
         public Bootstrapper()
         {
             Initialize();
+
+            ConventionManager.AddElementConvention<PasswordBox>(
+            PasswordBoxHelper.BoundPasswordProperty,
+            "Password",
+            "PasswordChanged");
         }
 
         //Instance burada olusuyor, meta bir olay var, container kendi icinde kendi instance'ini olusturuyor ve sonra dagitiyor
@@ -32,7 +39,8 @@ namespace TRMDesktopUI
             
             _container
                 .Singleton<IWindowManager, WindowManager>() 
-                .Singleton<IEventAggregator, EventAggregator>();
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<IAPIHelper, APIHelper>(); //Open on one entire lifespan of HttpClient
 
             //Reflection, get type's assembly, get all the types that's running in the entire application
             //where it is a class and ends with ViewModel just like ShellViewModel
