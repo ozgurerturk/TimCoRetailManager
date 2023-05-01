@@ -4,16 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using TRMDesktopUI.EventModels;
 
 namespace TRMDesktopUI.ViewModels
 {
-    public class ShellViewModel : Conductor<object>
+    public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
-        private LoginViewModel _loginVM; // In ctor, we need to ask for our login form, we ask for it. Declare a holder
-        public ShellViewModel(LoginViewModel loginVM)
+        private IEventAggregator _events; //Bunlar shellview calistigi surece ayaktalar, loginview her shell degistiginde sifirlaniyor
+        private SalesViewModel _salesVM;
+        private SimpleContainer _container;
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM
+            , SimpleContainer container)
         {
-            _loginVM = loginVM;
-            ActivateItem(_loginVM); //Conductor'dan geldi, LoginViewModel'i gorunce LoginView'in gelme sebebi caliburn.micro
+            _events = events;
+            _salesVM = salesVM;
+            _container = container;
+
+            _events.Subscribe(this); //Subscribe to events which is declared through IHandle
+
+            ActivateItem(_container.GetInstance<LoginViewModel>()); //Conductor'dan geldi, LoginViewModel'i gorunce LoginView'in gelme sebebi caliburn.micro
+        }
+
+        public void Handle(LogOnEvent message)
+        {
+            ActivateItem(_salesVM);
         }
     }
 }
