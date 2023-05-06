@@ -15,7 +15,7 @@ namespace TRMDesktopUI.Library.API
     {
         //APIHelper'a geldi, sag tikladik extract interface dedik, orada prop'lar metodlar falan seciliyor sozlesmede olacak
         //ve ApiClient'i secmedik cunku 
-        private HttpClient apiClient;
+        private HttpClient _apiClient;
         private ILoggedInUserModel _loggedInUserModel;
 
         public APIHelper(ILoggedInUserModel loggedInUser) //Bootstrapper wpf'i calistirince APIHelper singleton ile basliyor, ctor'i da Initialize client yapiyor
@@ -24,14 +24,22 @@ namespace TRMDesktopUI.Library.API
             _loggedInUserModel = loggedInUser;
         }
 
+        public HttpClient ApiClient
+        {
+            get
+            {
+                return _apiClient;
+            }
+        }
+
         private void InitializeClient()
         {
             string api = ConfigurationManager.AppSettings["api"]; //App.config'den geldi, key = "api". System.Configuration ekledik 
 
-            apiClient = new HttpClient(); //Will be used for the lifetime for the WPF instance and only one
-            apiClient.BaseAddress = new Uri(api); //localhost/*number* geldi, asagida /token ekledik ardina
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiClient = new HttpClient(); //Will be used for the lifetime for the WPF instance and only one
+            _apiClient.BaseAddress = new Uri(api); //localhost/*number* geldi, asagida /token ekledik ardina
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         
@@ -44,7 +52,7 @@ namespace TRMDesktopUI.Library.API
                 new KeyValuePair<string,string>("password", password)
             });
 
-            using (HttpResponseMessage response = await apiClient.PostAsync("/Token", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
             {
                 if (response.IsSuccessStatusCode) //http200-299 gelirse yani
                 {
@@ -62,12 +70,12 @@ namespace TRMDesktopUI.Library.API
 
         public async Task GetLoggedInUserInfo(string token)
         {
-            apiClient.DefaultRequestHeaders.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            apiClient.DefaultRequestHeaders.Add("Authorization", $"bearer { token }");
+            _apiClient.DefaultRequestHeaders.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiClient.DefaultRequestHeaders.Add("Authorization", $"bearer { token }");
 
-            using (HttpResponseMessage response = await apiClient.GetAsync("/api/User"))
+            using (HttpResponseMessage response = await _apiClient.GetAsync("/api/User"))
             {
                 if (response.IsSuccessStatusCode)
                 {

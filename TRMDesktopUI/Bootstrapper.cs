@@ -36,13 +36,14 @@ namespace TRMDesktopUI
         //Tim Corey: Don't use it unless you can't find a better way, not great on memory usage
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndpoint, ProductEndpoint>();
 
-            
             _container
                 .Singleton<IWindowManager, WindowManager>() 
                 .Singleton<IEventAggregator, EventAggregator>() 
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                
                 .Singleton<IAPIHelper, APIHelper>(); //Open on one entire lifespan of HttpClient
 
             //Reflection, get type's assembly, get all the types that's running in the entire application

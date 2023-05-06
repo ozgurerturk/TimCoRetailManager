@@ -10,7 +10,7 @@ using TRMDataManager.Library.Models;
 namespace TRMDataManager.Controllers
 {
     [Authorize]
-    public class UserController : ApiController  
+    public class UserController : ApiController
     {
         [HttpGet]
         public UserModel GetById() //Why not use a model from .mvc
