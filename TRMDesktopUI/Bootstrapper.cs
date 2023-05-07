@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TRMDesktopUI.Helpers;
 using TRMDesktopUI.Library.API;
+using TRMDesktopUI.Library.Helpers;
 using TRMDesktopUI.Library.Models;
 using TRMDesktopUI.ViewModels;
 
@@ -43,7 +44,7 @@ namespace TRMDesktopUI
                 .Singleton<IWindowManager, WindowManager>() 
                 .Singleton<IEventAggregator, EventAggregator>() 
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
-                
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>(); //Open on one entire lifespan of HttpClient
 
             //Reflection, get type's assembly, get all the types that's running in the entire application
