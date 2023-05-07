@@ -12,17 +12,14 @@ namespace TRMDesktopUI.ViewModels
     {
         private IEventAggregator _events; //Bunlar shellview calistigi surece ayaktalar, loginview her shell degistiginde sifirlaniyor
         private SalesViewModel _salesVM;
-        private SimpleContainer _container;
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM
-            , SimpleContainer container)
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM)
         {
             _events = events;
             _salesVM = salesVM;
-            _container = container;
 
             _events.Subscribe(this); //Subscribe to events which is declared through IHandle
 
-            ActivateItem(_container.GetInstance<LoginViewModel>()); //Conductor'dan geldi, LoginViewModel'i gorunce LoginView'in gelme sebebi caliburn.micro
+            ActivateItem(IoC.Get<LoginViewModel>()); //Conductor'dan geldi, LoginViewModel'i gorunce LoginView'in gelme sebebi caliburn.micro
         }
 
         public void Handle(LogOnEvent message)
